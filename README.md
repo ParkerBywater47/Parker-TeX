@@ -17,7 +17,7 @@ To begin and end a new environment the syntax is as follows:
         more stuff inside environment
     end[]
     
-I've defined a convenient syntax to use array and matrix environments 
+I've also defined a convenient way to use matrix environments.
 
 ### Commands
 Commands with no arguments can be used as follows: 
