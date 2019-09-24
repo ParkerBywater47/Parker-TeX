@@ -18,7 +18,7 @@ def main():
 
                 # The line below places output files in a folder named out assuming main.py is in a src directory at the
                 # same level as out
-                # out_file_path = os.pardir + r"\out\" + out_file_name
+                # out_file_path = os.pardir + "\\out\\" + out_file_name
 
                 # Give a little message to the user about what the program is doing
                 print("\ninput file:", os.path.abspath(in_file_path))
