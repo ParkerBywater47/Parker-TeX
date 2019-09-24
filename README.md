@@ -17,8 +17,12 @@ To begin and end a new environment the syntax is as follows:
         more stuff inside environment
     end[]
     
-I've also defined a convenient way to use matrix environments.
-
+I've also defined a convenient way to use amsmath matrix environments. The syntax is below. The parameter, data, is a comma separated list of the entries of the matrix in a left-to-right, top-to-bottom order. 
+    
+    begin[matrix, # rows in matrix, # columns in matrix, data] 
+    
+    end[]
+    
 ### Commands
 Commands with no arguments can be used as follows: 
 
