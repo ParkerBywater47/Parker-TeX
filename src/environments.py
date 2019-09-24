@@ -3,6 +3,12 @@ import commands
 
 
 def begin_env_parser(args_string, env_stack=None):
+    """
+    Parses begin[<env>] commands into laTeX code
+    :param args_string: the string in between '[' and ']'
+    :param env_stack: a list to add the environment to
+    :return: appropriate "\begin{<env>}" laTeX command.
+    """
     out = ""
     if re.match(r"\s+", args_string):
         # empty environment error

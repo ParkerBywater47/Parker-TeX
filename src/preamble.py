@@ -3,6 +3,12 @@ import re
 
 # noinspection RegExpRedundantEscape
 def packages_parser(source_str):
+    """
+    Searches for packages[] command. This has its own parser because packages may be loaded with optional args, which
+    requires different parsing
+    :param source_str:
+    :return: appropriate laTeX code
+    """
     # print("source_str:\n" + source_str)
     # try to find the word 'packages'
     packages_start = source_str.find('packages')
@@ -37,7 +43,7 @@ def packages_parser(source_str):
                     # unexpected EOF while parsing error
                     pass
             else:
-                # invalid. generate compiler error. # print string until
+                # invalid. generate compiler error
                 pass
         else:
             # conclude that this is not a package declaration, rather the word 'package'
@@ -49,13 +55,17 @@ def packages_parser(source_str):
             # valid
             pass
         else:
-            # invalid. generate compiler error. # print string until ....
+            # invalid. generate compiler error
             pass
     # packages found nowhere
     return source_str
 
 
 def generate_packages_string(packages_str):
+    """
+    Generates the LaTeX code for the packages in packages_str
+    :param packages_str: a comma separated list of package names
+    """
     # Check for case when no packages are loaded with options
     out_str = ""
     if '[' not in packages_str:
@@ -139,49 +149,4 @@ def do_doc_class(source_file):
     return out_string
 
 
-def write_packages_to_file(packages_string, out_file):
-    # Check for case when no packages are loaded with options
-    if '[' not in packages_string:
-        packages_lst = packages_string.split(",")
-        for i in packages_lst:
-            out_file.write('\\usepackage{' + i.strip() + '}\n')
-    else:
-        i = 0
-        j = 0
-        packages_string += ','
-        while i < len(packages_string) and j < len(packages_string):
-            if packages_string[j] != '[' and packages_string[j] != ',':
-                j += 1
-            elif packages_string[j] == ',':
-                # print('\\usepackage{' + packages_string[i:j].strip() + '}\n', end='')
-                out_file.write('\\usepackage{' + packages_string[i:j].strip() + '}\n')
-                i = j + 1
-                j = i
-            else:  # when packages_string[j] == '[':
-                rsb = packages_string.find(']', j)
-                if rsb == -1:
-                    print('Missing or extra right bracket (]) somewhere in your packages list?\nYour list of packages: '
-                          + packages_string)
-                    return -101
-                else:
-                    # print('\\usepackage' + packages_string[j:rsb + 1] + '{' + packages_string[i:j].strip() + '}\n', end='')
-                    out_file.write(
-                        '\\usepackage\\' + packages_string[j:rsb] + '\\]{' + packages_string[i:j].strip() + '}\n')
-                    for i in range(rsb + 1, len(packages_string)):
-                        if packages_string[i] == ',':
-                            i += 1
-                            j = i
-                            break
-            # else: # this should only be true when at the end of the string
-            #     print('i: ' + str(i) + '\nj: ' + str(j) + '\nlength of string: ' + str(len(packages_string)))
 
-
-def development_test():
-    # A development test case
-    s = 'documentclass[article]\npackages[geometry[op1 = 1, op2 = 2], soul]\nbegin[document]\n\n' \
-        'end[document]'
-    print(packages_parser(s))
-
-
-if __name__ == "__main__":
-    development_test()

@@ -1,6 +1,5 @@
-import os
 from preamble import *
-import environments
+from environments import *
 
 SLASH_ITEM_COMMANDS = {"item", "question"}
 NASTY_ENVIRONMENTS = {'align', 'align*', 'equation', 'equation*', 'multline', 'multline*',
@@ -69,7 +68,7 @@ def main_parser(string):
                     if name == "begin":
                         # try:
                         string = string[:name_start] + "\\" + string[name_start:lsb] \
-                                 + environments.begin_env_parser(string[lsb + 1:rsb], environments_stack) \
+                                 + begin_env_parser(string[lsb + 1:rsb], environments_stack) \
                                  + string[rsb + 1:]
                         # except EmptyEnvironmentError:
                     elif name == "newcommand" or name == "renewcommand":
@@ -263,10 +262,3 @@ def end_parser(string, start):
             break
     return string
 
-
-if __name__ == "__main__":
-    with open(os.pardir + '\\inputs\\test-input0.txt') as file:
-        s = ''
-        for line in file:
-            s += line
-    print(main_parser(s))

@@ -1,8 +1,9 @@
+import os
 from commands import *
 
 
 def main():
-    os.chdir(r".\inputs")
+    # os.chdir(<Your working directory>)
     print("\nYour current directory: " + os.getcwd())
 
     running = True
@@ -11,7 +12,13 @@ def main():
             in_file_path = input("\nEnter a Parker-TeX file directory (or type quit to exit): ")
             # Check that the file exists and run the parser if it does
             if os.path.isfile(in_file_path):
-                out_file_path = os.pardir + "\\out\\" + in_file_path[:in_file_path.find(".txt")] + "-out.txt"
+                # make a name for the output file
+                out_file_name = in_file_path[:in_file_path.find(".txt")] + "_out.txt"
+                out_file_path = out_file_name
+
+                # The line below places output files in a folder named out assuming main.py is in a src directory at the
+                # same level as out
+                # out_file_path = os.pardir + r"\out\" + out_file_name
 
                 # Give a little message to the user about what the program is doing
                 print("\ninput file:", os.path.abspath(in_file_path))
