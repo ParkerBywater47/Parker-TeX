@@ -30,7 +30,7 @@ Commands with no arguments can be used as follows:
     
 Commands with multiple arguments can be used similarly:
 
-    Arguments: commandname[arg1, arg2, ...]
+    commandname[arg1, arg2, ...]
 
 Ideally, commands with no arguments could be treated as a keyword in order to remove the requirement of 
 typing '[]' at the end of each command. Implementing this is problematic though for the following reasons. First, I haven't found 
