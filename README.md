@@ -69,4 +69,4 @@ If the above code is rewritten as below, there is no compile error.
         c + d &= e \\
     \end{align*} 
 
-As you can see, a blank line (which is ignored by the LaTeX compiler in almost every other usage) caused a compile error. This is bad, so I wrote some logic to fix it. 
+As you can see, a blank line (which is ignored by the LaTeX compiler in almost every other usage) caused a compile error. This is bad, so I made sure Parker-TeX fixed this. 
