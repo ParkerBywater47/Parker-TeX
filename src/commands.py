@@ -23,12 +23,14 @@ def main_parser(string):
     :param string: the source string to be compiled
     :return: the "compiled" string
     """
+    # parse escape sequences
+    string = littex_parser(string)
     string = packages_parser(string)
     environments_stack = []
-    rsb = find_brace(']', string)
+    rsb = find(']', string)
     while rsb != -1:
         lsb_indices = []
-        lsb = find_brace('[', string)
+        lsb = find('[', string)
 
         # do some syntax checking
         if lsb == -1 and rsb == -1:
@@ -43,11 +45,11 @@ def main_parser(string):
         else:
             while lsb != -1 and rsb != -1:
                 lsb_indices.append(lsb)
-                lsb = find_brace('[', string, lsb + 1, rsb)
+                lsb = find('[', string, lsb + 1, rsb)
 
             while len(lsb_indices) != 0:
                 lsb = lsb_indices.pop()
-                rsb = find_brace(']', string, lsb + 1)
+                rsb = find(']', string, lsb + 1)
                 name = get_command_name(string, lsb - 1)
                 name_start = lsb - len(name)
 
@@ -103,8 +105,36 @@ def main_parser(string):
                             # This is some old code I don't quite understand
                             print('\n\nsomething went wrong\npointer = lsb - len(name) - 1 = ' + str(name_start) + '\n')
                             return
-        rsb = find_brace(']', string, rsb + 1)
+        rsb = find(']', string, rsb + 1)
     return escape_commands(string)
+
+
+def littex_parser(string):
+    out = string
+    search_result = re.search("(lit[Tt]e[Xx]\s*\[)(.*)\]", string)
+    while search_result is not None:
+        # print(search_result)
+        args_string = search_result.group(2)
+        # print(args_string)
+
+        left = find("[", args_string)
+        while left != -1:
+            # print("before splice: " + args_string)
+            args_string = args_string[:left] + "\\" + args_string[left:]
+            # print("after splice: " + args_string)
+            left = find("[", args_string, left + 2)
+        right = find("]", args_string)
+
+        while right != -1:
+            args_string = args_string[:right] + "\\" + args_string[right:]
+            right = find("]", args_string, right + 2)
+        comma = find(",", args_string)
+        while comma != -1:
+            args_string = args_string[:comma] + "\\" + args_string[comma:]
+            comma = find(",", args_string, comma + 2)
+        out = out[:search_result.start()] + args_string + out[search_result.end():]
+        search_result = re.search("(lit[Tt]e[Xx]\s*\[)(.*)\]", out)
+    return out
 
 
 def get_command_name(string, start):
@@ -175,20 +205,23 @@ def parse_doc_class(args_str):
 
 def escape_commands(string):
     """
-    Finds '\[' and '\]' and replaces them with '[' and ']' respectively
+    Finds '\[', '\]', '\,' character sequences and replaces them with '[', ']', and '\,' respectively
     :param string: self explanatory
     :return: the appropriately parsed string
     """
     out = string
     done = False
     while not done:
-        left = out.find('\[')
+        left = out.find('\\[')
         if left != -1:
             out = out[:left] + out[left + 1:]
-        right = out.find('\]')
+        right = out.find('\\]')
         if right != -1:
             out = out[:right] + out[right + 1:]
-        done = left == -1 and right == -1
+        comma = out.find('\\,')
+        if comma != -1:
+            out = out[:comma] + out[comma + 1:]
+        done = left == -1 and right == -1 and comma == -1
     return out
 
 
@@ -210,7 +243,7 @@ def split(string):
     return out
 
 
-def find_brace(key, string, start=0, end=None):
+def find(key, string, start=0, end=None):
     """
     Finds only '[' and ']' which are not prefixed by a '\' within the (closed) interval [start:end)
     :param key: '[' or ']'
@@ -221,8 +254,8 @@ def find_brace(key, string, start=0, end=None):
     """
     # validate search key
     target = key.strip()
-    if not (target == '[' or target == ']'):
-        return -1
+    if not (target == '[' or target == ']' or target == ','):
+        return -1 # Should really raise an exception here
     # assign the appropriate end value
     if end is None:
         end = len(string)
