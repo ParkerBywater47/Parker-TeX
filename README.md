@@ -34,7 +34,9 @@ Commands with multiple arguments can be used similarly:
 
 Ideally, commands with no arguments could be treated as a keyword in order to remove the requirement of 
 typing '[]' at the end of each command. Implementing this is problematic though for the following reasons. First, I haven't found 
-a way read in command defintions from any given package or class. Given that this process isn't automated, somebody (me) would have to manually add commands to a set of keywords as different users request them. Not very efficient.  
+a way read in command defintions from any given package or class. Given that this process isn't automated, somebody (me) would have to manually add commands to a set of keywords as different users request them. Not very efficient. 
+
+Given the way Parker-Tex parses commands, most LaTeX code will come out of the parser untouched. But, as there are a few bits of LaTeX syntax which will be altered upon compilation, Parker-TeX defines a command to circumvent the issue. This command is `littex[]`. The argument passed to this is untouched by the Parker-TeX parser. 
 
 ## Various Bug Fixes
 ### Alignment type environments 
